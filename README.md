@@ -12,7 +12,7 @@ A idéia é simples mas eficaz. Não houve tempo para a conclusão do projeto po
 Os testes por enquanto se mostram positivos e as questões não são geradas se houver conteúdo indevido devido a escolha do tema. Então o usuário é convidado por meio de um alerta a reformular a pergunta e tentar novamente.
 
 Próximas etapas:   
-_Conclusão da geração da correção.
+_Conclusão da geração da correção.  
 _Aplicação de camadas de segurança e login do usuário.  
 _Estilização do front end.  
 _Responsividade do site.  
