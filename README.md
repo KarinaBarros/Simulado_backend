@@ -11,20 +11,20 @@ A idéia é simples mas eficaz. Não houve tempo para a conclusão do projeto po
 
 Os testes por enquanto se mostram positivos e as questões não são geradas se houver conteúdo indevido devido a escolha do tema. Então o usuário é convidado por meio de um alerta a reformular a pergunta e tentar novamente.
 
-Próximas etapas:
+Próximas etapas:   
 _Conclusão da geração da correção.
-_Aplicação de camadas de segurança e login do usuário.
-_Estilização do front end.
-_Responsividade do site.
-_Explicações para melhorar a experiência do usuário.
-_Impressão do gabarito corrigido.
-_Dicas de estudo direcionado e avaliação da nota.
+_Aplicação de camadas de segurança e login do usuário.  
+_Estilização do front end.  
+_Responsividade do site.  
+_Explicações para melhorar a experiência do usuário.  
+_Impressão do gabarito corrigido.  
+_Dicas de estudo direcionado e avaliação da nota.  
 _Técnicas de SEO.
 
 A idéia é colocar o site em produção e disponibilizálo para o público em geral.
 
-Público Alvo: 
-Estudantes em geral, o site irá ajudálos com os estudos, testando seus conhecimentos com conteúdo totalmente gerado por Inteligência Artificial.
-Instituições de ensino em geral.
+Público Alvo:   
+_Estudantes em geral, o site irá ajudálos com os estudos, testando seus conhecimentos com conteúdo totalmente gerado por Inteligência Artificial.  
+_Instituições de ensino em geral.
 
-  [Link para o projeto de front end](https://github.com/KarinaBarros/Simulado_frontend))
+  [Link para o projeto de front end](https://github.com/KarinaBarros/Simulado_frontend)
