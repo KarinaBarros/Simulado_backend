@@ -1,10 +1,25 @@
 const express = require('express');
+const rateLimit = require("express-rate-limit");
 const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 require('dotenv').config();
 const cors = require('cors');
+
+/*const corsOptions = {
+  origin: 'http://seu-frontend.com'
+};
+
+app.use(cors(corsOptions));*/
+
 app.use(cors());
+
+/*const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutos
+  max: 20, // limite de 20 solicitações por IP
+  message: "Você excedeu o limite de solicitações, por favor, tente novamente mais tarde."
+});
+app.use(limiter);*/
 
 const {
   GoogleGenerativeAI,
