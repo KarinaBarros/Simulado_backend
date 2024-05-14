@@ -6,6 +6,10 @@ const port = 3000;
 require('dotenv').config();
 const cors = require('cors');
 
+let storedData;
+let respostas;
+let formattedData;
+
 /*const corsOptions = {
   origin: 'http://seu-frontend.com'
 };
@@ -44,7 +48,7 @@ function formatarQuestoes(texto) {
         }
         questoes.push(questaoAtual);
       }
-      questaoAtual = {
+        questaoAtual = {
         pergunta: "",
         opcoes: [],
         resposta: "",
@@ -71,7 +75,7 @@ function formatarQuestoes(texto) {
   if (questoes.length !== 10) {
     throw new Error("Não foram retornadas exatamente 10 questões.");
   }
-
+  console.log(questoes);
   return questoes;
 }
 
@@ -108,7 +112,7 @@ async function run(tema, nivel) {
   const response = await result.response;
   console.log(response.text());
   const questoesFormatadas = formatarQuestoes(response.text());
-
+  storedData = questoesFormatadas;
   return questoesFormatadas;
 }
 
@@ -116,12 +120,12 @@ app.post('/api', async (req, res) => {
   try {
     const { tema, nivel } = req.body;
     const data = await run(tema, nivel);
-    const formattedData = data.map(questao => ({
+    formattedData = data.map(questao => ({
       numero: questao.numero,
       pergunta: questao.pergunta,
-      opcoes: questao.opcoes
+      opcoes: questao.opcoes,
     }));
-
+    
     res.json(formattedData);
     console.log(formattedData);
   } catch (error) {
@@ -130,11 +134,75 @@ app.post('/api', async (req, res) => {
   }
 });
 
-app.post('/respostas', (req, res) => {
-  const answers = req.body.map(({ resposta, explicacao, numero }) => ({ resposta, explicacao, numero }));
-  console.log('Respostas recebidas:', answers);
-  res.status(200).send('Respostas recebidas com sucesso!');
+app.get('/simulado', (req, res) => {
+  // Verifique se há respostas armazenadas
+  if (!formattedData) {
+    return res.status(404).json({ error: 'Gabarito não encontrado' });
+  }
+  
+  // Envie o gabarito como resposta
+  res.json(formattedData);
 });
+
+app.post('/respostas', (req, res) => {
+  const respostasUsuario = req.body;
+  console.log('Respostas do usuário:', respostasUsuario);
+  const letrasRespostasUsuario = respostasUsuario.map(resposta => {
+    const match = resposta.match(/\((\w)\)/);
+    return match ? match[1] : null;
+  });
+  const correcao = [];
+
+    respostas = storedData.map((questao, index) => {
+    const match = questao.resposta.match(/\((\w)\)/);
+    const respostaCorreta = match ? match[1] : null;
+    const respostaUsuario = letrasRespostasUsuario[index];
+    const correcaoQuestao = respostaUsuario === respostaCorreta ? 'certo' : 'errado';
+    correcao.push(correcaoQuestao);
+    const explicacao = questao.explicacao.replace(/^\*\*Explicação:\*\*\s*/, '');
+    
+    return {
+      numero: questao.numero,
+      pergunta: questao.pergunta,
+      correcao: correcaoQuestao,
+      opcoes: questao.opcoes,
+      usuario: respostaUsuario,
+      resposta: respostaCorreta,
+      explicacao: explicacao,
+    };
+  });
+ 
+
+  const letrasRespostas = storedData.map(questao => {
+    const match = questao.resposta.match(/\((\w)\)/);
+    return match ? match[1] : null;
+  });
+  
+  for (let i = 0; i < letrasRespostasUsuario.length; i++){
+    if(letrasRespostasUsuario[i] === letrasRespostas[i]){
+      correcao.push('certo');
+    }
+    else{
+      correcao.push('errado');
+    }
+  }
+  
+  
+  console.log(respostas);
+  res.json(respostas);
+ 
+});
+
+app.get('/gabarito', (req, res) => {
+  // Verifique se há respostas armazenadas
+  if (!respostas) {
+    return res.status(404).json({ error: 'Gabarito não encontrado' });
+  }
+  
+  // Envie o gabarito como resposta
+  res.json(respostas);
+});
+
 
 app.listen(port, () => {
   console.log(`Servidor ouvindo na porta ${port}`);
