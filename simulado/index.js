@@ -9,6 +9,7 @@ const cors = require('cors');
 let storedData;
 let respostas;
 let formattedData;
+let dados;
 
 /*const corsOptions = {
   origin: 'http://seu-frontend.com'
@@ -145,13 +146,18 @@ app.get('/simulado', (req, res) => {
 });
 
 app.post('/respostas', (req, res) => {
+  
   const respostasUsuario = req.body;
   console.log('Respostas do usuário:', respostasUsuario);
   const letrasRespostasUsuario = respostasUsuario.map(resposta => {
     const match = resposta.match(/\((\w)\)/);
     return match ? match[1] : null;
   });
+
+  
   const correcao = [];
+  const notas = [];
+  
 
     respostas = storedData.map((questao, index) => {
     const match = questao.resposta.match(/\((\w)\)/);
@@ -160,6 +166,7 @@ app.post('/respostas', (req, res) => {
     const correcaoQuestao = respostaUsuario === respostaCorreta ? 'certo' : 'errado';
     correcao.push(correcaoQuestao);
     const explicacao = questao.explicacao.replace(/^\*\*Explicação:\*\*\s*/, '');
+    
     
     return {
       numero: questao.numero,
@@ -178,13 +185,27 @@ app.post('/respostas', (req, res) => {
     return match ? match[1] : null;
   });
   
-  for (let i = 0; i < letrasRespostasUsuario.length; i++){
-    if(letrasRespostasUsuario[i] === letrasRespostas[i]){
-      correcao.push('certo');
+  
+
+  for (let i = 0; i < correcao.length; i++) {
+    if(correcao[i] === 'certo'){
+      notas.push(1);
     }
     else{
-      correcao.push('errado');
+      notas.push(0);
     }
+  }
+  console.log('notas:', notas);
+
+  let nota = 0;
+  for (let score of notas){
+    nota += score
+  }
+  console.log('nota final:', nota);
+
+  dados = {
+    nota: nota,
+    respostas: respostas
   }
   
   
@@ -198,9 +219,11 @@ app.get('/gabarito', (req, res) => {
   if (!respostas) {
     return res.status(404).json({ error: 'Gabarito não encontrado' });
   }
+
+  
   
   // Envie o gabarito como resposta
-  res.json(respostas);
+  res.json(dados);
 });
 
 
