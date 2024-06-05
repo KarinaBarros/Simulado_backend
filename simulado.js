@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-
 const bodyParser = require('body-parser');
 const app = express();
 
+
 require('dotenv').config();
+app.use(express.json());
+
 
 let storedData;
 let respostas;
@@ -100,7 +102,7 @@ async function run(tema, nivel) {
   return questoesFormatadas;
 }
 
-app.post('', async (req, res) => {
+app.post('/api', async (req, res) => {
   try {
     const { tema, nivel } = req.body;
     const data = await run(tema, nivel);
