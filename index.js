@@ -13,6 +13,9 @@ const bodyParser = require('body-parser');
 
 
 app.use(cors());
+app.use('/apí', cors());
+app.use('/simulado', cors());
+app.use('/gabarito', cors());
 app.use(express.json());
 
 
