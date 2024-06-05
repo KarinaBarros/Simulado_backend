@@ -82,7 +82,7 @@ app.post('/register', async (req, res) => {
       from: process.env.MAIL_USER,
       to: email,
       subject: 'Confirme seu registro',
-      text: `Por favor, clique no link a seguir para confirmar seu registro: http://localhost:3001/confirm/${token}`,
+      text: `Por favor, clique no link a seguir para confirmar seu registro: ${process.env.FRONT_LOCATION}/confirm/${token}`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -177,7 +177,7 @@ app.post('/forgot-password', async (req, res) => {
       from: process.env.MAIL_USER,
       to: email,
       subject: 'Troca de senha',
-      text: `Clique no link a seguir para redefinir sua senha: http://localhost:3001/reset-password/${token}`,
+      text: `Clique no link a seguir para redefinir sua senha: ${process.env.FRONT_LOCATION}/reset-password/${token}`,
     };
 
     await transporter.sendMail(mailOptions);
