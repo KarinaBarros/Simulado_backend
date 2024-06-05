@@ -72,6 +72,9 @@ async function getMessage(tema, nivel) {
 }
 
 async function run(tema, nivel) {
+
+  
+  console.log(tema, nivel);
   const generationConfig = {
     temperature: 0.7,
   };
@@ -98,7 +101,6 @@ async function run(tema, nivel) {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
-  console.log(response);
   storedData = questoesFormatadas;
   return questoesFormatadas;
 }
