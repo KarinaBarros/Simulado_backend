@@ -72,9 +72,6 @@ async function getMessage(tema, nivel) {
 }
 
 async function run(tema, nivel) {
-
-  
-  console.log(tema, nivel);
   const generationConfig = {
     temperature: 0.7,
   };
@@ -106,20 +103,23 @@ async function run(tema, nivel) {
 }
 
 app.post('/api', async (req, res) => {
-  try {
-    const { tema, nivel } = req.body;
-    const data = await run(tema, nivel);
-    formattedData = data.map(questao => ({
-      numero: questao.numero,
-      pergunta: questao.pergunta,
-      opcoes: questao.opcoes,
-    }));
+  // try {
+  //   const { tema, nivel } = req.body;
+  //   const data = await run(tema, nivel);
+  //   formattedData = data.map(questao => ({
+  //     numero: questao.numero,
+  //     pergunta: questao.pergunta,
+  //     opcoes: questao.opcoes,
+  //   }));
     
-    res.json(formattedData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error generating response');
-  }
+  //   res.json(formattedData);
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).send('Error generating response');
+  // }
+  
+    
+  res.json('uhuuuuul!');
 });
 
 app.get('/simulado', (req, res) => {
