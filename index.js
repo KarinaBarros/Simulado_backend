@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mysql = require('mysql2/promise'); 
 require('dotenv').config();
-
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000; 
 const nodemailer = require('nodemailer');
@@ -11,7 +11,8 @@ const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
 
 
-
+app.use(cors());
+app.use(express.json());
 
 
 const limiter = rateLimit({
