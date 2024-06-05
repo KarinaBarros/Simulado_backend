@@ -14,8 +14,6 @@ const rateLimit = require('express-rate-limit');
 app.use(cors());
 app.use(express.json());
 
-app.use('/simuladoApp', cors());
-
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 10, // limite de 10 requisições
@@ -233,7 +231,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-app.use(authenticateToken, simuladoApp);
+app.use(cors(), authenticateToken, simuladoApp);
 
 // Rota protegida
 app.get('/protected', authenticateToken, (req, res) => {
