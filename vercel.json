@@ -11,7 +11,8 @@
         "src": "/(.*)",
         "dest": "index.js",
         "headers": {
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
+          "x-vercel-idle-timeout": 30000
         }
       }
     ]
