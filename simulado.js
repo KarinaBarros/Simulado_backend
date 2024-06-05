@@ -100,7 +100,7 @@ async function run(tema, nivel) {
   return questoesFormatadas;
 }
 
-app.post('/api', async (req, res) => {
+app.post('', async (req, res) => {
   try {
     const { tema, nivel } = req.body;
     const data = await run(tema, nivel);

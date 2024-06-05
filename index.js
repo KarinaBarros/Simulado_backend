@@ -231,7 +231,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-app.use(cors(), authenticateToken, simuladoApp);
+app.use('/api', cors(), authenticateToken, simuladoApp);
 
 // Rota protegida
 app.get('/protected', authenticateToken, (req, res) => {
