@@ -1,16 +1,10 @@
 const express = require('express');
-const cors = require('cors');
 const router = express.Router();
 
 const bodyParser = require('body-parser');
 const app = express();
 
 require('dotenv').config();
-
-
-app.use('/api', cors());
-app.use('/simulado', cors());
-app.use('/gabarito', cors());
 
 let storedData;
 let respostas;
