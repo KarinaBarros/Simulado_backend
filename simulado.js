@@ -98,6 +98,7 @@ async function run(tema, nivel) {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
+  console.log(response);
   storedData = questoesFormatadas;
   return questoesFormatadas;
 }
