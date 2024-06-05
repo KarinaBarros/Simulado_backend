@@ -14,9 +14,7 @@ const rateLimit = require('express-rate-limit');
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', cors());
-app.use('/simulado', cors());
-app.use('/gabarito', cors());
+app.use('/simuladoApp', cors());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
