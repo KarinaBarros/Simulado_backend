@@ -14,6 +14,8 @@ const rateLimit = require('express-rate-limit');
 app.use(cors());
 app.use(express.json());
 
+const timeout = 300000;
+app.use(express.timeout(timeout));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
