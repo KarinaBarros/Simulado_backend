@@ -11,7 +11,10 @@ const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
 
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://simulado-frontend.vercel.app/'
+}
+));
 app.use(express.json());
 
 

@@ -6,7 +6,10 @@ const app = express();
 
 require('dotenv').config();
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://simulado-frontend.vercel.app/'
+}
+));
 app.use(express.json());
 
 
