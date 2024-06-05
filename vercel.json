@@ -13,13 +13,6 @@
         "headers": {
           "Access-Control-Allow-Origin": "*"
         }
-      },
-      {
-        "src": "/(.*)",
-        "dest": "simulado.js",
-        "headers": {
-          "Access-Control-Allow-Origin": "*"
-        }
       }
     ]
 }

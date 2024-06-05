@@ -11,11 +11,9 @@ const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
 
 
-const timeout = 300000;
-app.use(express.timeout(timeout));
-
 app.use(cors());
 app.use(express.json());
+
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos

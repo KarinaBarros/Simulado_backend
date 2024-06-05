@@ -4,6 +4,10 @@ const bodyParser = require('body-parser');
 const app = express();
 
 
+
+
+const timeout = 300000;
+app.use(express.timeout(timeout));
 require('dotenv').config();
 app.use(express.json());
 
