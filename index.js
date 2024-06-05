@@ -253,7 +253,9 @@ async function startServer() {
   }
 }
 
+
 // Rotas do simulado
+
 
 let storedData;
 let respostas;
