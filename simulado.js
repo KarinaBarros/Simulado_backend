@@ -1,16 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const cors = require('cors');
+
 const bodyParser = require('body-parser');
 const app = express();
 
 require('dotenv').config();
 
-app.use(cors({
-  origin: 'https://simulado-frontend.vercel.app/'
-}
-));
-app.use(express.json());
+
 
 
 let storedData;
