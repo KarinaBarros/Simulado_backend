@@ -12,7 +12,7 @@
         "dest": "index.js",
         "headers": {
           "Access-Control-Allow-Origin": "*",
-          "x-vercel-idle-timeout": 30000
+          "x-vercel-idle-timeout": "30000"
         }
       }
     ]
