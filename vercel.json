@@ -12,8 +12,12 @@
         "dest": "index.js",
         "headers": {
           "Access-Control-Allow-Origin": "*",
-          "x-vercel-request-timeout": "300000"
+          "x-vercel-api-request-timeout": "300000"
         }
       }
-    ]
+    ], "functions": {
+      "app/api/**/*": {
+        "maxDuration": 90 
+      }
+    }
 }
