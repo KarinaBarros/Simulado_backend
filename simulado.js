@@ -118,7 +118,7 @@ app.post('/api', async (req, res) => {
   }
 });
 
-app.get('/simulado', (req, res) => {
+app.get('/simulado', async(req, res) => {
   // Verifique se há respostas armazenadas
   if (!formattedData) {
     return res.status(404).json({ error: 'Gabarito não encontrado' });
