@@ -10,7 +10,7 @@
     }
   ],
   "functions": {
-    "src/simulado.js": {
+    "api/simulado.js": {
       "maxDuration": 60 
     }
   }
