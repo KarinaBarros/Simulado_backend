@@ -12,6 +12,7 @@
         "dest": "index.js",
         "headers": {
           "Access-Control-Allow-Origin": "*"
+          
         }
       }
     ], "functions": {
