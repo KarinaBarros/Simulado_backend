@@ -15,7 +15,7 @@
         "dest": "simulado.js"
       }
     ], "functions": {
-      "/simulado": {
+      "simuladoApp": {
         "maxDuration": 60 
       }
     }
