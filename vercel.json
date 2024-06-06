@@ -1,22 +1,17 @@
 {
-    "version": 2,
-    "functions": [
-      {
-        "src": "index.js",
-        "use": "@vercel/node",
-        "simulado.js": {
-          "maxDuration": 60 
-        }
+  "version": 2,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
       }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "index.js",
-        "headers": {
-          "Access-Control-Allow-Origin": "*"
-
-        }
-      }
-    ]
+    }
+  ],
+  "functions": {
+    "simulado.js": {
+      "maxDuration": 60 
+    }
+  }
 }
