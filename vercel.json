@@ -1,17 +1,22 @@
 {
-  "version": 2,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "index.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
+    "version": 2,
+    
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "index.js",
+        "headers": {
+          "Access-Control-Allow-Origin": "*"
+          
+        }
+      },
+      {
+        "src": "/simulado",
+        "dest": "simulado.js"
+      }
+    ], "functions": {
+      "simulado.js": {
+        "maxDuration": 60 
       }
     }
-  ],
-  "functions": {
-    "simulado.js": {
-      "maxDuration": 60 
-    }
-  }
 }
