@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-async function formatarQuestoes(texto) {
+function formatarQuestoes(texto) {
   const linhas = texto.split("\n");
   let questoes = [];
   let questaoAtual = null;
@@ -118,7 +118,7 @@ app.post('/api', async (req, res) => {
   }
 });
 
-app.get('/simulado', async(req, res) => {
+app.get('/simulado', (req, res) => {
   // Verifique se há respostas armazenadas
   if (!formattedData) {
     return res.status(404).json({ error: 'Gabarito não encontrado' });
