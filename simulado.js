@@ -67,7 +67,7 @@ function formatarQuestoes(texto) {
 
 
 async function getMessage(tema, nivel) {
-  return `Elabore questões de 1 a 10 com alternativas a b c d e, com a resposta em baixo de cada questão para o tema ${tema} para o ${nivel}, em baixo de cada resposta me explique porque aquela resposta é a correta. me envie em um formato questao contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta contendo a resposta, explicação contendo a esplicação `;
+  return `Gere um simulado com questões de 1 a 10 com alternativas a b c d e, com a resposta em baixo de cada questão para o tema ${tema} para o ${nivel}, em baixo de cada resposta me explique porque aquela resposta é a correta. me envie em um formato questao contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta contendo a resposta, explicação contendo a esplicação `;
 }
 
 async function run(tema, nivel) {
