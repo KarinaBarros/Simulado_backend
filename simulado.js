@@ -92,7 +92,7 @@ async function run(tema, nivel) {
       threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
     },
   ]
-  const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig, safetySettings});
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings});
   const prompt = await getMessage(tema, nivel);
   const result = await model.generateContent(prompt);
   const response = await result.response;
