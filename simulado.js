@@ -23,12 +23,13 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
+  texto = texto.replace(/\*\*/g, "");
   const linhas = texto.split("\n");
   let questoes = [];
   let questaoAtual = null;
 
   linhas.forEach(linha => {
-    if (linha.startsWith("**Questão")) {
+    if (linha.startsWith("Questão")) {
       if (questaoAtual) {
         if (!questaoAtual.pergunta || questaoAtual.opcoes.length !== 5 || !questaoAtual.resposta || !questaoAtual.explicacao) {
           throw new Error("A questão não atende aos critérios: cada questão deve ter uma pergunta, cinco opções, uma resposta e uma explicação.");
@@ -44,9 +45,9 @@ function formatarQuestoes(texto) {
       questaoAtual.numero = parseInt(linha.match(/\d+/)[0]);
     } else if (linha.startsWith("(")) {
       questaoAtual.opcoes.push(linha);
-    } else if (linha.startsWith("**Resposta")) {
+    } else if (linha.startsWith("Resposta")) {
       questaoAtual.resposta = linha;
-    } else if (linha.startsWith("**Explicação")) {
+    } else if (linha.startsWith("Explicação")) {
       questaoAtual.explicacao = linha;
     } else if (questaoAtual) {
       questaoAtual.pergunta += linha + '\n';
