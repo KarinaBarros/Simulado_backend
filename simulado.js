@@ -68,7 +68,7 @@ function formatarQuestoes(texto) {
 
 
 async function getMessage(tema, nivel) {
-  return `Gere um simulado com questões de 1 a 10 com alternativas para o tema ${tema} para o ${nivel}, no formato, questao contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta contendo a resposta, explicação contendo a explicação `;
+  return `Elabore um questionário com questões de 1 a 10 com alternativas para o tema ${tema} para o ${nivel}, no formato, questao contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta: contendo a resposta, explicação: contendo a explicação `;
 }
 
 async function run(tema, nivel) {
