@@ -23,6 +23,7 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
+  console.log('texto');
   texto = texto.replace(/\*\*/g, "");
   const linhas = texto.split("\n");
   let questoes = [];
