@@ -24,52 +24,76 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
   console.log(texto);
-  texto = texto.replace(/\*\*/g, "");
-  const linhas = texto.split("\n");
-  let questoes = [];
-  let questaoAtual = null;
+  texto = texto.split('\n').filter(linha => linha.trim() !== '').join('\n');
+  console.log(texto);
+  
+  // Separar as questões
+  //const questoesTexto = texto.split("**Questão");
+ 
 
-  linhas.forEach(linha => {
-    if (linha.startsWith("Questão")) {
-      if (questaoAtual) {
-        if (!questaoAtual.pergunta || questaoAtual.opcoes.length !== 5 || !questaoAtual.resposta || !questaoAtual.explicacao) {
-          throw new Error("A questão não atende aos critérios: cada questão deve ter uma pergunta, cinco opções, uma resposta e uma explicação.");
-        }
-        questoes.push(questaoAtual);
-      }
-        questaoAtual = {
-        pergunta: "",
-        opcoes: [],
-        resposta: "",
-        explicacao: ""
-      };
-      questaoAtual.numero = parseInt(linha.match(/\d+/)[0]);
-    } else if (linha.startsWith("(")) {
-      questaoAtual.opcoes.push(linha);
-    } else if (linha.startsWith("Resposta")) {
-      questaoAtual.resposta = linha;
-    } else if (linha.startsWith("Explicação")) {
-      questaoAtual.explicacao = linha;
-    } else if (questaoAtual) {
-      questaoAtual.pergunta += linha + '\n';
-    }
-  });
+  // Array para armazenar as questões formatadas
+  const questoes = [];
 
-  if (questaoAtual) {
-    if (!questaoAtual.pergunta || questaoAtual.opcoes.length !== 5 || !questaoAtual.resposta || !questaoAtual.explicacao) {
-      throw new Error("A questão não atende aos critérios: cada questão deve ter uma pergunta, cinco opções, uma resposta e uma explicação.");
+  const regexQuestao = /\*\*Questão\s(\d+):\*\*\s*([\s\S]*?)\(a\)/g;
+  const regexOpcao = /\(([a-e])\)\s(.*?)\n/g;
+  const regexResposta = /\*\*Resposta:\*\*\s\(([a-e])\)\s(.*?)\n/g;
+  const regexExplicacao = /\*\*Explicação:\*\*\s([\s\S]*?)((?=\*\*Questão)|$)/g;
+  
+  let match;
+  while ((match = regexQuestao.exec(texto)) !== null) {
+    let numero = parseInt(match[1], 10);
+    let pergunta = match[2].replace(/\n/g, ' ').trim();
+    let questao = {
+      numero: numero,
+      pergunta: pergunta,
+      opcoes: [],
+      resposta: "",
+      explicacao: ""
+    };
+  
+    // Reinicia a busca de opções a partir do início da string da questão
+    regexOpcao.lastIndex = match.index;
+    let opcoesMatch;
+    while ((opcoesMatch = regexOpcao.exec(texto)) !== null) {
+      let opcaoCompleta = opcoesMatch[0].trim();
+      questao.opcoes.push(opcaoCompleta);
+      if (questao.opcoes.length >= 5) break;
     }
-    questoes.push(questaoAtual);
+  
+    let respostaMatch = regexResposta.exec(texto);
+    if (respostaMatch && respostaMatch[0]) {
+      questao.resposta = respostaMatch[0];
+    }
+  
+    let explicacaoMatch = regexExplicacao.exec(texto);
+    if (explicacaoMatch && explicacaoMatch[1]) {
+      questao.explicacao = explicacaoMatch[1].trim();
+    }
+  
+    questoes.push(questao);
   }
+  console.log(questoes);
+  // Verificar se todas as questões foram encontradas
   if (questoes.length !== 10) {
     throw new Error("Não foram retornadas exatamente 10 questões.");
   }
+  
+  // Verificar se todas as questões atendem aos critérios
+  questoes.forEach(q => {
+    if (!q.pergunta || q.opcoes.length !== 5 || !q.resposta || !q.explicacao) {
+      throw new Error("A questão não atende aos critérios: cada questão deve ter uma pergunta, cinco opções, uma resposta e uma explicação.");
+    }
+  });
+
+
+  
   return questoes;
 }
 
 
+
 async function getMessage(tema, nivel) {
-  return `Elabore um questionário com questões de 1 a 10 com alternativas para o tema ${tema} para o ${nivel}, no formato, questao contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta: contendo a resposta, explicação: contendo a explicação `;
+  return `Elabore um questionário com questões de 1 a 10 com alternativas para o tema ${tema} para o ${nivel}, no formato, **Questao** contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta: contendo a resposta completa, explicação: contendo a explicação. Distribua bem as respostas certas e corrija corretamente.`;
 }
 
 async function run(tema, nivel) {
