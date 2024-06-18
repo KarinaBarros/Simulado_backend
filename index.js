@@ -11,6 +11,7 @@ const nodemailer = require('nodemailer');
 const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
 
+app.set('trust proxy', true);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({origin: process.env.FRONT_LOCATION, credentials: true}));
