@@ -156,7 +156,7 @@ app.post('/login',limiter, async (req, res) => {
     
 });
 
-// Rota para solicitar troca de senha
+// Rota para solicitar troca de senha a
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
