@@ -76,7 +76,7 @@ app.post('/register', async (req, res) => {
     }
 
     const tokenData = { nome, email, senha };
-    const token = jwt.sign(tokenData, 'emailconfirmationtoken', { expiresIn: '10m' });
+    const token = jwt.sign(tokenData, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET, { expiresIn: '10m' });
 
     const mailOptions = {
       from: process.env.MAIL_USER,
@@ -103,7 +103,7 @@ app.post('/confirm',  async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, 'emailconfirmationtoken');
+    const decoded = jwt.verify(token, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET);
     const { nome, senha, email } = decoded; 
     
     const hashedPassword = await bcrypt.hash(senha, 10);
@@ -142,10 +142,10 @@ app.post('/login',limiter, async (req, res) => {
             return res.status(401).json({ error: 'Credenciais inválidas' });
         }
 
-        const token = jwt.sign({ userId: user.id }, 'secretpassword', { expiresIn: '30d' });
+        const token = jwt.sign({ userId: user.id }, process.env.AUTH_TOKEN_SECRET, { expiresIn: '10d' });
         removeRateLimit(req, res, () => {});
         res.json({ 
-          token: jwt.sign({ userId: user.id }, 'secretpassword', { expiresIn: '30d' }),
+          token: token,
           nome: user.nome 
         });
     } catch (error) {
@@ -156,7 +156,7 @@ app.post('/login',limiter, async (req, res) => {
     
 });
 
-// Rota para solicitar troca de senha a
+// Rota para solicitar troca de senha 
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
@@ -171,7 +171,7 @@ app.post('/forgot-password', async (req, res) => {
     }
 
     const tokenData = { userId: user.id };
-    const token = jwt.sign(tokenData, 'emailconfirmationtoken', { expiresIn: '10m' });
+    const token = jwt.sign(tokenData, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET, { expiresIn: '10m' });
 
     const mailOptions = {
       from: process.env.MAIL_USER,
@@ -198,7 +198,7 @@ app.post('/reset-password', async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, 'emailconfirmationtoken');
+    const decoded = jwt.verify(token, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET);
     const { userId } = decoded;
   
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -223,7 +223,7 @@ function authenticateToken(req, res, next) {
     return res.sendStatus(401);
   }
 
-  jwt.verify(token, 'secretpassword', (err, user) => {
+  jwt.verify(token, process.env.AUTH_TOKEN_SECRET, (err, user) => {
     if (err) {
       return res.sendStatus(403);
     }
