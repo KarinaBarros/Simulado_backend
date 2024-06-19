@@ -11,7 +11,6 @@ const nodemailer = require('nodemailer');
 const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
 
-app.set('trust proxy', 1);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({origin: process.env.FRONT_LOCATION, credentials: true}));
@@ -145,8 +144,7 @@ app.post('/login',limiter, async (req, res) => {
 
         const token = jwt.sign({ userId: user.id }, 'secretpassword', { expiresIn: '30d' });
         removeRateLimit(req, res, () => {});
-        const isProduction = process.env.NODE_ENV;
-        res.cookie('token', token, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
+        res.cookie('token', token, {httpOnly: true});
         res.json({ 
           message: 'Login efetuado com sucesso',
           nome: user.nome 
