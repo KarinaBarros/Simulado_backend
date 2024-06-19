@@ -145,7 +145,8 @@ app.post('/login',limiter, async (req, res) => {
 
         const token = jwt.sign({ userId: user.id }, 'secretpassword', { expiresIn: '30d' });
         removeRateLimit(req, res, () => {});
-        res.cookie('token', token, {httpOnly: true});
+        const isProduction = process.env.NODE_ENV;
+        res.cookie('token', token, { httpOnly: true, secure: isProduction, sameSite: 'strict' });
         res.json({ 
           message: 'Login efetuado com sucesso',
           nome: user.nome 
