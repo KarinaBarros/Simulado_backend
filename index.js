@@ -44,7 +44,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Conexão com o banco de dados
+// Conexão com o banco de dados a
 async function connectDB() {
   try {
     const connection = await mysql.createConnection({
