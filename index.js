@@ -9,9 +9,11 @@ const PORT = process.env.PORT || 3000;
 const nodemailer = require('nodemailer');
 const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
+const corsOptions = {
+  origin: process.env.FRONT_LOCATION
+};
 
-
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 
