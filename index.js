@@ -4,16 +4,16 @@ const bcrypt = require('bcrypt');
 const mysql = require('mysql2/promise'); 
 require('dotenv').config();
 const cors = require('cors');
-const cookieParser = require('cookie-parser')
 const app = express();
 const PORT = process.env.PORT || 3000; 
 const nodemailer = require('nodemailer');
 const simuladoApp = require('./simulado.js');
 const rateLimit = require('express-rate-limit');
 
+
+app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
-app.use(cors({origin: process.env.FRONT_LOCATION, credentials: true}));
+
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
@@ -144,22 +144,17 @@ app.post('/login',limiter, async (req, res) => {
 
         const token = jwt.sign({ userId: user.id }, 'secretpassword', { expiresIn: '30d' });
         removeRateLimit(req, res, () => {});
-        res.cookie('token', token, {httpOnly: true});
         res.json({ 
-          message: 'Login efetuado com sucesso',
+          token: jwt.sign({ userId: user.id }, 'secretpassword', { expiresIn: '30d' }),
           nome: user.nome 
         });
     } catch (error) {
         console.error('Erro ao autenticar usuário:', error);
         res.status(500).json({ error: 'Erro ao processar a solicitação' });
-    } 
-});
+    }
 
-// Rota para sair
-app.post('/logout', (req, res) => {
-  res.clearCookie('token');
-  res.json({message: 'Logout efetuado.'});
-})
+    
+});
 
 // Rota para solicitar troca de senha
 app.post('/forgot-password', async (req, res) => {
@@ -210,7 +205,6 @@ app.post('/reset-password', async (req, res) => {
     const connection = await connectDB();
     await connection.query('UPDATE login_simulado SET senha = ? WHERE id = ?', [hashedPassword, userId]);
     removeRateLimit(req, res, () => {});
-    res.clearCookie('token');
     res.json({ message: 'Senha redefinida com sucesso' });
   } catch (error) {
     console.error('Erro ao redefinir senha:', error);
@@ -222,7 +216,8 @@ app.post('/reset-password', async (req, res) => {
 
 // Middleware para proteger rotas privadas
 function authenticateToken(req, res, next) {
-  const token = req.cookies.token;
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (token == null) {
     return res.sendStatus(401);
