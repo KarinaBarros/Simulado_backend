@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 const nodemailer = require('nodemailer');
 const simuladoApp = require('./simulado.js');
 const simuladoApp2 = require('./simulado2.js');
+const ortografia = require('./ortografia.js');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
   origin: process.env.FRONT_LOCATION
@@ -237,6 +238,7 @@ function authenticateToken(req, res, next) {
 
 app.use(authenticateToken, simuladoApp);
 app.use(authenticateToken, simuladoApp2);
+app.use(authenticateToken, ortografia);
 
 // Rota protegida
 app.get('/protected', authenticateToken, (req, res) => {
