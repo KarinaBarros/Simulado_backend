@@ -19,22 +19,28 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
-  
   console.log(texto);
-  
-  
-  const questoes = texto;
+
+  const regexNota = /\*\*Nota\s*:\*\*\s*([\s\S]*?)(?=\*\*Comentário|\n)/g;
+  const regexComentario = /\*\*Comentário\s*:\*\*\s*([\s\S]*)/g;
+  const notaMatch = regexNota.exec(texto);
+  const comentarioMatch = regexComentario.exec(texto);
+
+  const questoes = {
+    nota: notaMatch ? notaMatch[1].trim() : null,
+    comentario: comentarioMatch ? comentarioMatch[1].replace(/\*/g, '').trim() : null,
+  };
   
   
   return questoes;
 }
   
 
-async function getMessage(ortografia) {
-  return `Corrija a ortografia desse texto em português do Brasil: ${ortografia}. Devolva o texto com as palavras que foram corrigidas entre ** e não inclua este parágrafo`;
+async function getMessage(redacao) {
+  return `Faça uma análise dessa redação, dizendo como pode ser melhorada e atribua uma nota de 1 a 10: ${redacao} Devolva no formato **Nota:** contendo a nota e **Comentário** com a análise.`;
 }
 
-async function run(ortografia) {
+async function run(redacao) {
   const generationConfig = {
     temperature: 0.6,
   };
@@ -57,7 +63,7 @@ async function run(ortografia) {
     },
   ];
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
-  const prompt = await getMessage(ortografia);
+  const prompt = await getMessage(redacao);
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
@@ -65,10 +71,10 @@ async function run(ortografia) {
   return questoesFormatadas;
 }
 
-app.post('/ortografia', async (req, res) => {
+app.post('/redacao', async (req, res) => {
   try {
-    const { ortografia } = req.body;
-    const data = await run(ortografia);
+    const { redacao } = req.body;
+    const data = await run(redacao);
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -76,7 +82,7 @@ app.post('/ortografia', async (req, res) => {
   }
 });
 
-app.get('/correcao', (req, res) => {
+app.get('/analise', (req, res) => {
   if (!formattedData) {
     return res.status(404).json({ error: 'Correção não encontrada' });
   }

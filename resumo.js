@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
-  
+  texto = texto.replace(/\*/g, ''); 
   console.log(texto);
   
   
@@ -30,11 +30,11 @@ function formatarQuestoes(texto) {
 }
   
 
-async function getMessage(ortografia) {
-  return `Corrija a ortografia desse texto em português do Brasil: ${ortografia}. Devolva o texto com as palavras que foram corrigidas entre ** e não inclua este parágrafo`;
+async function getMessage(resumo) {
+  return `Faça o resumo desse texto: ${resumo}`;
 }
 
-async function run(ortografia) {
+async function run(resumo) {
   const generationConfig = {
     temperature: 0.6,
   };
@@ -57,7 +57,7 @@ async function run(ortografia) {
     },
   ];
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
-  const prompt = await getMessage(ortografia);
+  const prompt = await getMessage(resumo);
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
@@ -65,10 +65,10 @@ async function run(ortografia) {
   return questoesFormatadas;
 }
 
-app.post('/ortografia', async (req, res) => {
+app.post('/resumo', async (req, res) => {
   try {
-    const { ortografia } = req.body;
-    const data = await run(ortografia);
+    const { resumo } = req.body;
+    const data = await run(resumo);
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -76,7 +76,7 @@ app.post('/ortografia', async (req, res) => {
   }
 });
 
-app.get('/correcao', (req, res) => {
+app.get('/textoresumido', (req, res) => {
   if (!formattedData) {
     return res.status(404).json({ error: 'Correção não encontrada' });
   }
