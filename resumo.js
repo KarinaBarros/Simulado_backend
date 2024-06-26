@@ -36,7 +36,7 @@ async function getMessage(resumo) {
 
 async function run(resumo) {
   const generationConfig = {
-    temperature: 0.6,
+    temperature: 0.5,
   };
   const safetySettings = [
     {

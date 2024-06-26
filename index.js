@@ -12,6 +12,7 @@ const simuladoApp2 = require('./simulado2.js');
 const ortografia = require('./ortografia.js');
 const resumo = require('./resumo.js');
 const redacao = require('./redacao.js');
+const estudo = require('./estudo.js');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
   origin: process.env.FRONT_LOCATION
@@ -243,6 +244,7 @@ app.use(authenticateToken, simuladoApp2);
 app.use(authenticateToken, ortografia);
 app.use(authenticateToken, resumo);
 app.use(authenticateToken, redacao);
+app.use(authenticateToken, estudo);
 
 // Rota protegida
 app.get('/protected', authenticateToken, (req, res) => {

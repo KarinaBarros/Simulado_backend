@@ -50,7 +50,7 @@ async function getMessage(tema, nivel) {
 
 async function run(tema, nivel) {
   const generationConfig = {
-    temperature: 0.6,
+    temperature: 0.5,
   };
   const safetySettings = [
     {

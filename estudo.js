@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
-  
+  texto = texto.replace(/\*/g, ''); 
   console.log(texto);
   
   
@@ -30,11 +30,11 @@ function formatarQuestoes(texto) {
 }
   
 
-async function getMessage(ortografia) {
-  return `Corrija a ortografia desse texto em português do Brasil: ${ortografia}. Devolva o texto com as todas as palavras que foram corrigidas ou acentuadas entre ** e não inclua este parágrafo`;
+async function getMessage(tema, nivel) {
+  return `Gere uma orientação de estudo para o tema ${tema}, para o nível ${nivel}, contendo links de onde estudar para os tópicos.`;
 }
 
-async function run(ortografia) {
+async function run(tema, nivel) {
   const generationConfig = {
     temperature: 0.5,
   };
@@ -57,7 +57,7 @@ async function run(ortografia) {
     },
   ];
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
-  const prompt = await getMessage(ortografia);
+  const prompt = await getMessage(tema, nivel);
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
@@ -65,10 +65,10 @@ async function run(ortografia) {
   return questoesFormatadas;
 }
 
-app.post('/ortografia', async (req, res) => {
+app.post('/estudo', async (req, res) => {
   try {
-    const { ortografia } = req.body;
-    const data = await run(ortografia);
+    const { tema, nivel } = req.body;
+    const data = await run(tema, nivel);
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -76,9 +76,9 @@ app.post('/ortografia', async (req, res) => {
   }
 });
 
-app.get('/correcao', (req, res) => {
+app.get('/orientacao', (req, res) => {
   if (!formattedData) {
-    return res.status(404).json({ error: 'Correção não encontrada' });
+    return res.status(404).json({ error: 'Orientação de estudos não encontrada.' });
   }
   console.log(formattedData);
   res.json(formattedData);
