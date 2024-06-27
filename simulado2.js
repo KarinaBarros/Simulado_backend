@@ -148,10 +148,10 @@ async function fazerNovaPergunta() {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
 
   const questoesTexto = questoesCompletas.map((questao) => {
-    return `${questao.numero}. ${questao.pergunta} Resposta: ${questao.respostaCliente}`;
+    return `${questao.numero}. ${questao.pergunta} /n Resposta: ${questao.respostaCliente}`;
   }).join('\n');
 
-  const novoPrompt = `Corrija essa prova:\n${questoesTexto}. No formato **Correção:** contendo certo, errado ou meio-certo, **Resposta:** contendo a resposta correta, **Valor:** contendo um valor de 0 a 1`;
+  const novoPrompt = `Corrija essa prova. No formato **Correção:** contendo certo quanto a resposta for interpretada como certa, errado quando a resposta estiver vazia ou não ter nada a ver com o contexto ou estiver errada, ou meio-certo quando a resposta estiver parcialmente certa, **Resposta:** contendo a resposta correta, **Valor:** contendo um valor de 0 a 1: \n${questoesTexto}`;
 
   try {
     const result = await model.generateContent(novoPrompt);
@@ -159,6 +159,7 @@ async function fazerNovaPergunta() {
     const perguntaNova = {
       pergunta: response.text().trim()
     };
+    console.log(novoPrompt);
     return perguntaNova;
   } catch (error) {
     console.error("Erro ao gerar nova pergunta:", error);
