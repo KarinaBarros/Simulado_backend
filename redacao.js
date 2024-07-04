@@ -37,7 +37,7 @@ function formatarQuestoes(texto) {
   
 
 async function getMessage(redacao) {
-  return `Faça uma análise dessa redação, dizendo como pode ser melhorada e atribua uma nota de 1 a 10: ${redacao} Devolva no formato **Nota:** contendo a nota e **Comentário** com a análise.`;
+  return `Faça uma análise dessa redação, dizendo como pode ser melhorada e atribua uma nota de 1 a 10: ${redacao} Devolva no formato **Nota:** contendo a nota e **Comentário** com a análise. Comentário e nota devem estar entre**`;
 }
 
 async function run(redacao) {
