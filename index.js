@@ -7,6 +7,8 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000; 
 const nodemailer = require('nodemailer');
+const { neon } = require('@neondatabase/serverless');
+const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 const simuladoApp = require('./simulado.js');
 const simuladoApp2 = require('./simulado2.js');
 const ortografia = require('./ortografia.js');
@@ -54,18 +56,12 @@ const transporter = nodemailer.createTransport({
 // Conexão com o banco de dados a
 async function connectDB() {
   try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
-    });
-    console.log('Conexão bem-sucedida ao banco de dados MySQL na AWS');
-    return connection;
+    const sql = neon(`postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=require`);
+    console.log('Conexão bem-sucedida ao banco de dados PostgreSQL');
+    return sql;
   } catch (err) {
-    console.error('Erro ao conectar ao banco de dados:', err);
-    throw err; 
+    console.error('Erro ao conectar ao banco de dados PostgreSQL:', err);
+    throw err;
   }
 }
 
@@ -76,7 +72,9 @@ app.post('/register', async (req, res) => {
   try {
     const connection = await connectDB();
 
-    const [existingUsers] = await connection.query('SELECT * FROM login_simulado WHERE email = ?', [email]);
+    const query = 'SELECT * FROM users WHERE email = ($1)';
+    const value = [email];
+    const existingUsers = await connection(query, value);
 
     if (existingUsers.length > 0) {
       return res.status(400).json({ error: 'Este email já está em uso' });
@@ -115,7 +113,12 @@ app.post('/confirm',  async (req, res) => {
     
     const hashedPassword = await bcrypt.hash(senha, 10);
     const connection = await connectDB();
-    await connection.query('INSERT INTO login_simulado (nome, email, senha) VALUES (?, ?, ?)', [nome, email, hashedPassword]);
+
+    const query = 'INSERT INTO users (nome, email, senha) VALUES ($1, $2, $3)';
+    const values = [nome, email, hashedPassword];
+    await connection(query, values);
+    
+    
     removeRateLimit(req, res, () => {});
     res.status(201).json({ message: 'Registro confirmado com sucesso' });
   } catch (error) {
@@ -133,16 +136,17 @@ app.post('/login',limiter, async (req, res) => {
 
     try {
         const connection = await connectDB();
-
-        const [rows] = await connection.query('SELECT * FROM login_simulado WHERE email = ?', [email]);
-        const user = rows[0];
+        const query = 'SELECT * FROM users WHERE email = ($1)';
+        const value = [email];        
+        const user = await connection(query, value);
+        
 
         if (!user) {
             console.log('Usuário não encontrado');
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
 
-        const passwordMatch = await bcrypt.compare(senha, user.senha);
+        const passwordMatch = await bcrypt.compare(senha, user[0].senha);
 
         if (!passwordMatch) {
             console.log('Credenciais inválidas');
@@ -169,15 +173,15 @@ app.post('/forgot-password', async (req, res) => {
 
   try {
     const connection = await connectDB();
-
-    const [rows] = await connection.query('SELECT * FROM login_simulado WHERE email = ?', [email]);
-    const user = rows[0];
+    const query = 'SELECT * FROM users WHERE email = ($1)';
+    const value = [email];        
+    const user = await connection(query, value);
 
     if (!user) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    const tokenData = { userId: user.id };
+    const tokenData = { userId: user[0].id };
     const token = jwt.sign(tokenData, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET, { expiresIn: '10m' });
 
     const mailOptions = {
@@ -210,7 +214,9 @@ app.post('/reset-password', async (req, res) => {
   
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     const connection = await connectDB();
-    await connection.query('UPDATE login_simulado SET senha = ? WHERE id = ?', [hashedPassword, userId]);
+    const query = 'UPDATE users SET senha = ($1) WHERE id = ($2)';
+    const values = [hashedPassword, userId];        
+    await connection(query, values);
     removeRateLimit(req, res, () => {});
     res.json({ message: 'Senha redefinida com sucesso' });
   } catch (error) {
