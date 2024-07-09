@@ -157,7 +157,7 @@ app.post('/login',limiter, async (req, res) => {
         removeRateLimit(req, res, () => {});
         res.json({ 
           token: token,
-          nome: user.nome 
+          nome: user[0].nome 
         });
     } catch (error) {
         console.error('Erro ao autenticar usuário:', error);
