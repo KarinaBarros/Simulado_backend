@@ -1,7 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const mysql = require('mysql2/promise'); 
 require('dotenv').config();
 const cors = require('cors');
 const app = express();
@@ -15,6 +14,7 @@ const ortografia = require('./ortografia.js');
 const resumo = require('./resumo.js');
 const redacao = require('./redacao.js');
 const estudo = require('./estudo.js');
+const temas = require('./temas.js');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
   origin: process.env.FRONT_LOCATION
@@ -67,7 +67,7 @@ async function connectDB() {
 
 // Rota para cadastrar um novo usuário
 app.post('/register', async (req, res) => {
-  const { nome, email, senha } = req.body;
+  const { nome, email, senha, nivel, curso } = req.body;
 
   try {
     const connection = await connectDB();
@@ -80,7 +80,7 @@ app.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Este email já está em uso' });
     }
 
-    const tokenData = { nome, email, senha };
+    const tokenData = { nome, email, senha, nivel, curso };
     const token = jwt.sign(tokenData, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET, { expiresIn: '10m' });
 
     const mailOptions = {
@@ -109,13 +109,13 @@ app.post('/confirm',  async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.EMAIL_CONFIRMATION_TOKEN_SECRET);
-    const { nome, senha, email } = decoded; 
+    const { nome, senha, email, nivel, curso } = decoded; 
     
     const hashedPassword = await bcrypt.hash(senha, 10);
     const connection = await connectDB();
 
-    const query = 'INSERT INTO users (nome, email, senha) VALUES ($1, $2, $3)';
-    const values = [nome, email, hashedPassword];
+    const query = 'INSERT INTO users (nome, email, senha, nivel, curso) VALUES ($1, $2, $3, $4, $5)';
+    const values = [nome, email, hashedPassword, nivel, curso];
     await connection(query, values);
     
     
@@ -157,7 +157,9 @@ app.post('/login',limiter, async (req, res) => {
         removeRateLimit(req, res, () => {});
         res.json({ 
           token: token,
-          nome: user[0].nome 
+          nome: user[0].nome,
+          nivel: user[0].nivel,
+          curso: user[0].curso
         });
     } catch (error) {
         console.error('Erro ao autenticar usuário:', error);
@@ -251,6 +253,7 @@ app.use(authenticateToken, ortografia);
 app.use(authenticateToken, resumo);
 app.use(authenticateToken, redacao);
 app.use(authenticateToken, estudo);
+app.use(authenticateToken, temas);
 
 // Rota protegida
 app.get('/protected', authenticateToken, (req, res) => {
