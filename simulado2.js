@@ -45,7 +45,8 @@ function formatarQuestoes(texto) {
 }
 
 async function getMessage(tema, nivel) {
-  return `Elabore um questionário com questões de 1 a 10 sem uso de imagens, para o tema ${tema} para o ${nivel}, no formato, **Questao** contendo a questao.`;
+  return `Elabore um questionário com questões de 1 a 10 sem uso de imagens, para o tema ${tema} para  alunos do ${nivel}, no formato, **Questao** contendo a questao.`;
+
 }
 
 async function run(tema, nivel) {
@@ -72,6 +73,7 @@ async function run(tema, nivel) {
   ];
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
   const prompt = await getMessage(tema, nivel);
+  console.log(prompt);
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
@@ -209,7 +211,7 @@ app.get('/gabaritoDiscursivo', async (req, res) => {
       let nota = 0;
       if (correcao.toLowerCase() === 'certo') {
         nota = 1;
-      } else if (correcao.toLowerCase() === 'meio-certo') {
+      } else if (correcao.toLowerCase() === 'meio-certo' || correcao.toLowerCase() === ('meio certo')) {
         nota = 0.5;
       } else if (correcao.toLowerCase() === 'errado') {
         nota = 0;

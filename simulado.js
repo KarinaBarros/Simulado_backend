@@ -93,7 +93,7 @@ function formatarQuestoes(texto) {
 
 
 async function getMessage(tema, nivel) {
-  return `Elabore um questionário com questões de 1 a 10 sem uso de imagens, com alternativas para o tema ${tema} para o ${nivel}, no formato, **Questao** contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta: contendo a resposta completa, explicação: contendo a explicação. Distribua bem as respostas certas e corrija corretamente.`;
+  return `Elabore um questionário com questões de 1 a 10 sem uso de imagens, com alternativas para o tema ${tema} para alunos do ${nivel}, no formato, **Questao** contendo a questao, opções (a) (b) (c) (d) (e) contendo as opções, resposta: contendo a resposta completa, explicação: contendo a explicação. Distribua bem as respostas certas e corrija corretamente.`;
 }
 
 async function run(tema, nivel) {
