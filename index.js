@@ -15,6 +15,7 @@ const resumo = require('./resumo.js');
 const redacao = require('./redacao.js');
 const estudo = require('./estudo.js');
 const temas = require('./temas.js');
+const traducao = require('./traducao.js');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
   origin: process.env.FRONT_LOCATION
@@ -254,6 +255,7 @@ app.use(authenticateToken, resumo);
 app.use(authenticateToken, redacao);
 app.use(authenticateToken, estudo);
 app.use(authenticateToken, temas);
+app.use(authenticateToken, traducao);
 
 // Rota protegida
 app.get('/protected', authenticateToken, (req, res) => {
