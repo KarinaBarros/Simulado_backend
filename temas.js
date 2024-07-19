@@ -51,8 +51,8 @@ function formatarQuestoes(texto) {
 
 async function getMessage(curso, nivel) {
     let pergunta;
-    if(curso === ''){
-        pergunta = `Liste 10 temas que são abordados hoje em dia no ${nivel}, sem abordagens ou explicaçõese sem enumerar os temas. Devolva cada tema entre **`;
+    if((curso === '') || (curso === null)){
+        pergunta = `Liste 10 temas que são abordados hoje em dia no ${nivel}, sem abordagens ou explicações e sem enumerar os temas. Devolva cada tema entre **`;
     }else{
         pergunta = `Liste 10 temas, sem abordagens ou explicações e sem enumerar os temas, que sejam diversificados e atuais, abordados no ${nivel} para o curso de ${curso}. Devolva cada tema entre **`;
     }

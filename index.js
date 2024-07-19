@@ -248,6 +248,41 @@ function authenticateToken(req, res, next) {
   });
 }
 
+app.post('/editar', authenticateToken, async (req, res) => {
+  const { email, novoNome, novoNivel, novoCurso } = req.body;
+  const resposta = 'dados enviados';
+  console.log(email);
+  console.log(novoNome);
+  console.log(novoNivel);
+  console.log(novoCurso);
+  
+  try {
+    const connection = await connectDB();
+    if (novoNome) {
+      const query = 'UPDATE users SET nome = $1 WHERE email = $2';
+      const values = [novoNome, email];
+      await connection(query, values);
+    }
+    if (novoNivel) {
+      const query = 'UPDATE users SET nivel = $1 WHERE email = $2';
+      const values = [novoNivel, email];
+      await connection(query, values);
+    }
+    
+      const query = 'UPDATE users SET curso = $1 WHERE email = $2';
+      const values = [novoCurso, email];
+      await connection(query, values);
+    
+
+    res.json(resposta);
+    
+  } catch (error) {
+    console.error('Erro ao processar a solicitação', error);
+    res.status(500).json({ error: 'Erro ao processar a solicitação' });
+  }
+});
+
+
 app.use(authenticateToken, simuladoApp);
 app.use(authenticateToken, simuladoApp2);
 app.use(authenticateToken, ortografia);
