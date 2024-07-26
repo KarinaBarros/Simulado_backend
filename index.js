@@ -286,12 +286,6 @@ app.post('/editar', authenticateToken, async (req, res) => {
 app.post('/erro', authenticateToken, async (req, res) => {
   const { email, nome, nivel, curso, temas, erro } = req.body;
   const resposta = 'Email enviado.';
-  console.log(email);
-  console.log(nome);
-  console.log(nivel);
-  console.log(curso);
-  console.log(temas);
-  console.log(erro);
   
   try {
     const Temas = temas.join('\n');
@@ -309,6 +303,28 @@ app.post('/erro', authenticateToken, async (req, res) => {
     };
     await transporter.sendMail(mailError);
     await transporter.sendMail(mailResponse);
+    res.json(resposta);
+    
+  } catch (error) {
+    console.error('Erro ao processar a solicitação', error);
+    res.status(500).json({ error: 'Erro ao processar a solicitação' });
+  }
+});
+
+app.post('/contato', async (req, res) => {
+  const { email, nome, mensagem } = req.body;
+  const resposta = 'Email enviado.';
+  
+  try {
+    const contato = {
+      from: process.env.MAIL_USER,
+      to: process.env.MAIL_USER,
+      subject: 'Contato',
+      text: `Email: ${email}\nNome: ${nome}\nMensagem:\n ${mensagem}`
+    };
+    
+    await transporter.sendMail(contato);
+    
     res.json(resposta);
     
   } catch (error) {
