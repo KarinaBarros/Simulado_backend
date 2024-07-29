@@ -154,7 +154,7 @@ app.post('/login',limiter, async (req, res) => {
             return res.status(401).json({ error: 'Credenciais inválidas' });
         }
 
-        const token = jwt.sign({ userId: user.id }, process.env.AUTH_TOKEN_SECRET, { expiresIn: '10d' });
+        const token = jwt.sign({ userId: user[0].id }, process.env.AUTH_TOKEN_SECRET, { expiresIn: '1d' });
         removeRateLimit(req, res, () => {});
         res.json({ 
           token: token,
