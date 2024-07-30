@@ -248,14 +248,10 @@ function authenticateToken(req, res, next) {
   });
 }
 
+//rota para editar dados do usuário
 app.post('/editar', authenticateToken, async (req, res) => {
   const { email, novoNome, novoNivel, novoCurso } = req.body;
   const resposta = 'dados enviados';
-  console.log(email);
-  console.log(novoNome);
-  console.log(novoNivel);
-  console.log(novoCurso);
-  
   try {
     const connection = await connectDB();
     if (novoNome) {
@@ -282,7 +278,7 @@ app.post('/editar', authenticateToken, async (req, res) => {
   }
 });
 
-
+//Rota para reportar um erro
 app.post('/erro', authenticateToken, async (req, res) => {
   const { email, nome, nivel, curso, temas, erro } = req.body;
   const resposta = 'Email enviado.';
@@ -311,6 +307,7 @@ app.post('/erro', authenticateToken, async (req, res) => {
   }
 });
 
+//Rota para contato
 app.post('/contato', async (req, res) => {
   const { email, nome, mensagem } = req.body;
   const resposta = 'Email enviado.';
