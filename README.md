@@ -1,30 +1,31 @@
 # Simulado_backend
- Site simulado, gera um simulado com inteligência artificial a partir de tema e nivel de escolaridade esolhidos pelo usuário.
- 
-    Tela inicial:
- ![Tela inicial](https://github.com/KarinaBarros/Simulado_backend/blob/main/Captura%20de%20tela%202024-05-10%20064051.png)
 
-    Simulado gerado:
-![Simulado gerado](https://github.com/KarinaBarros/Simulado_backend/blob/main/Captura%20de%20tela%202024-05-10%20063754.png)
+Olá, meu nome é Karina Barros e hoje tenho o prazer de apresentar a vocês o EstudAI, a ferramenta de estudo do futuro. Totalmente impulsionada por inteligência artificial, o EstudAI foi desenvolvido para transformar a maneira de estudar e garantir o alcance dos melhores resultados possíveis.
 
-A idéia é simples mas eficaz. Não houve tempo para a conclusão do projeto porem está em desenvolvimento. Por enquanto o usuário digita o tema escolhido e escolhe o nível de escolaridade, clica em enviar e é redirecionado para uma nova página onde o simulado é gerado com opções para cada pergunta que devem ser clicadas e submetidas com o clique de um botão. São dez questões com cinco alternativas cada. Nas prósimas etapas que não estão concluídas o usuário será redirecionado para uma próxima página onde será exibida a correção com nota de 0 a 10, correção das opções individualmente e explicação da alternativa correta.
+O EstudAI oferece uma gama de funcionalidades inovadoras para otimizar a sua jornada de aprendizado:
 
-Os testes por enquanto se mostram positivos e as questões não são geradas se houver conteúdo indevido devido a escolha do tema. Então o usuário é convidado por meio de um alerta a reformular a pergunta e tentar novamente.
+Orientação de Estudo: Receba sugestões personalizadas de materiais e estratégias de estudo com base na inteligência artificial. O EstudAI oferece links para sites relevantes, ajudando você a usar seu tempo de forma mais eficiente.
 
-Próximas etapas:   
-_Conclusão da geração da correção.  
-_Aplicação de camadas de segurança e login do usuário.  
-_Estilização do front end.  
-_Responsividade do site.  
-_Explicações para melhorar a experiência do usuário.  
-_Impressão do gabarito corrigido.  
-_Dicas de estudo direcionado e avaliação da nota.  
-_Técnicas de SEO.
+Simulado: Prepare-se para suas provas com simulados personalizados e interativos. As correções automáticas fornecem um gabarito detalhado e uma nota final, permitindo uma avaliação precisa do seu desempenho.
 
-A idéia é colocar o site em produção e disponibilizálo para o público em geral.
+Correção Ortográfica: Melhore a qualidade dos seus textos com nossa ferramenta de correção ortográfica, que identifica e corrige erros, permitindo que você escreva com mais confiança e precisão.
 
-Público Alvo:   
-_Estudantes em geral, o site irá ajudálos com os estudos, testando seus conhecimentos com conteúdo totalmente gerado por Inteligência Artificial.  
-_Instituições de ensino em geral.
+Resumo: Transforme textos longos em resumos claros e concisos, economizando tempo e facilitando a compreensão das principais informações.
 
-  [Link para o projeto de front end](https://github.com/KarinaBarros/Simulado_frontend)
+Redação: Receba feedback detalhado sobre suas redações, com dicas práticas para aprimorar a qualidade da sua escrita e alcançar melhores notas.
+
+Tradução: Traduza textos de qualquer idioma para o português com precisão, mantendo o contexto original.
+
+O EstudAI não só demonstra um uso significativo da inteligência artificial, proporcionando uma experiência de estudo superior, mas também é uma solução criativa e inovadora que se destaca por sua originalidade.
+
+Nosso objetivo é atender estudantes que enfrentam desafios na organização e otimização do estudo, trazendo mudanças positivas para sua vida acadêmica e promovendo a acessibilidade educacional.
+
+Finalmente, o EstudAI foi desenvolvido com atenção meticulosa aos detalhes, garantindo alta qualidade e um desempenho impecável.
+
+Em resumo, o EstudAI é a ferramenta que pode revolucionar a sua maneira de estudar. Convidamos você a experimentar e transformar sua jornada de aprendizado com o EstudAI.
+
+  [Link para o projeto de front end](https://github.com/KarinaBarros/estudai)
+
+  [Link para o app](https://estudai-beta.vercel.app/)
+
+  [Link para o vídeo](https://youtu.be/9oPwUUp2B54)
