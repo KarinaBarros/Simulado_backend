@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const cors = require('cors');
 const app = express();
+const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000; 
 const nodemailer = require('nodemailer');
 const { neon } = require('@neondatabase/serverless');
@@ -23,6 +24,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(bodyParser.json());
 
 
 const limiter = rateLimit({

@@ -8,6 +8,8 @@ app.use(express.json());
 
 let formattedData;
 
+let dataStore = {};
+
 const {
   GoogleGenerativeAI,
   HarmCategory,
@@ -61,7 +63,7 @@ async function run(ortografia) {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
-  formattedData = questoesFormatadas;
+  
   return questoesFormatadas;
 }
 
@@ -69,6 +71,7 @@ app.post('/ortografia', async (req, res) => {
   try {
     const { ortografia } = req.body;
     const data = await run(ortografia);
+    dataStore[req.user.userId] = data;
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -77,11 +80,11 @@ app.post('/ortografia', async (req, res) => {
 });
 
 app.get('/correcao', (req, res) => {
-  if (!formattedData) {
+  const data = dataStore[req.user.userId];
+  if (!data) {
     return res.status(404).json({ error: 'Correção não encontrada' });
   }
-  console.log(formattedData);
-  res.json(formattedData);
+  res.json(data);
 });
 
 module.exports = app;

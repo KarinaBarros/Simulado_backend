@@ -1,16 +1,12 @@
 const express = require('express');
-const router = express.Router();
 const bodyParser = require('body-parser');
 const app = express();
 
 require('dotenv').config();
 app.use(express.json());
 
+let dataStore = {};
 
-let storedData;
-let respostas;
-let formattedData;
-let dados;
 
 const {
   GoogleGenerativeAI,
@@ -123,21 +119,20 @@ async function run(tema, nivel) {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
-  storedData = questoesFormatadas;
+  
   return questoesFormatadas;
 }
 
 app.post('/api', async (req, res) => {
+  dataStore[req.user.userId] = {};
   try {
     const { tema, nivel } = req.body;
     const data = await run(tema, nivel);
-    formattedData = data.map(questao => ({
-      numero: questao.numero,
-      pergunta: questao.pergunta,
-      opcoes: questao.opcoes,
-    }));
     
-    res.json(formattedData);
+   
+    dataStore[req.user.userId] = data;
+    
+    res.json(data);
   } catch (error) {
     console.error(error);
     res.status(500).send('Error generating response');
@@ -145,18 +140,24 @@ app.post('/api', async (req, res) => {
 });
 
 app.get('/simulado', (req, res) => {
+  const data = dataStore[req.user.userId];
   // Verifique se há respostas armazenadas
-  if (!formattedData) {
+  if (!data) {
     return res.status(404).json({ error: 'Gabarito não encontrado' });
   }
-  
+
+  const formattedData = data.map(questao => ({
+    numero: questao.numero,
+    pergunta: questao.pergunta,
+    opcoes: questao.opcoes,
+  }));
   // Envie o gabarito como resposta
   res.json(formattedData);
 });
 
 app.post('/respostas', (req, res) => {
-  
   const respostasUsuario = req.body;
+  console.log(respostasUsuario);
   const letrasRespostasUsuario = respostasUsuario.map(resposta => {
     const match = resposta.match(/\((\w)\)/);
     return match ? match[1] : null;
@@ -166,8 +167,8 @@ app.post('/respostas', (req, res) => {
   const correcao = [];
   const notas = [];
   
-
-    respostas = storedData.map((questao, index) => {
+    const data = dataStore[req.user.userId];
+    const respostas = data.map((questao, index) => {
     const match = questao.resposta.match(/\((\w)\)/);
     const respostaCorreta = match ? match[1] : null;
     const respostaUsuario = letrasRespostasUsuario[index];
@@ -188,10 +189,7 @@ app.post('/respostas', (req, res) => {
   });
  
 
-  const letrasRespostas = storedData.map(questao => {
-    const match = questao.resposta.match(/\((\w)\)/);
-    return match ? match[1] : null;
-  });
+ 
   
   
 
@@ -209,25 +207,28 @@ app.post('/respostas', (req, res) => {
     nota += score
   }
 
-  dados = {
+  const dados = {
     nota: nota,
     respostas: respostas
   }
+
+  dataStore[req.user.userId] = dados
   
   res.json(respostas);
  
 });
 
 app.get('/gabarito', (req, res) => {
+  const data = dataStore[req.user.userId];
   // Verifique se há respostas armazenadas
-  if (!respostas) {
+  if (!data) {
     return res.status(404).json({ error: 'Gabarito não encontrado' });
   }
 
   
   
   // Envie o gabarito como resposta
-  res.json(dados);
+  res.json(data);
 });
 
 
