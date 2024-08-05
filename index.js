@@ -143,6 +143,7 @@ app.post('/login',limiter, async (req, res) => {
         const value = [email];        
         const user = await connection(query, value);
         
+        
 
         if (!user) {
             console.log('Usuário não encontrado');

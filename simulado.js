@@ -229,6 +229,7 @@ app.get('/gabarito', (req, res) => {
   
   // Envie o gabarito como resposta
   res.json(data);
+  dataStore[req.user.userId] = {};
 });
 
 

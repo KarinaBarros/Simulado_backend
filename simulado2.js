@@ -6,8 +6,7 @@ const app = express();
 require('dotenv').config();
 app.use(express.json());
 
-let formattedData;
-let questoesCompletas;
+let dataStore = {};
 
 const {
   GoogleGenerativeAI,
@@ -82,9 +81,11 @@ async function run(tema, nivel) {
 }
 
 app.post('/discursiva', async (req, res) => {
+  dataStore[req.user.userId] = {};
   try {
     const { tema, nivel } = req.body;
     const data = await run(tema, nivel);
+    dataStore[req.user.userId] = data;
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -93,23 +94,25 @@ app.post('/discursiva', async (req, res) => {
 });
 
 app.get('/simuladoDiscursivo', (req, res) => {
-  if (!formattedData) {
+  const data = dataStore[req.user.userId];
+  if (!data) {
     return res.status(404).json({ error: 'Simulado não encontrado.' });
   }
-  console.log(formattedData);
-  res.json(formattedData);
+  console.log(data);
+  res.json(data);
 });
 
 app.post('/respostasDiscursivo', (req, res) => {
   const respostas = req.body;
+  const data = dataStore[req.user.userId];
   
-  if (!formattedData || formattedData.length === 0) {
+  if (!data || data.length === 0) {
     return res.status(404).json({ error: 'Não há perguntas formatadas disponíveis.' });
   }
   
-  questoesCompletas = [];
+  const questoesCompletas = [];
   
-  formattedData.forEach((perguntaFormatada) => {
+  data.forEach((perguntaFormatada) => {
     const respostaCorrespondente = respostas.find((resposta) => resposta.numero === perguntaFormatada.numero);
     if (respostaCorrespondente) {
       const perguntaCompleta = {
@@ -122,10 +125,11 @@ app.post('/respostasDiscursivo', (req, res) => {
   });
   
   console.log(questoesCompletas);
+  dataStore[req.user.userId] = questoesCompletas;
   res.send('Respostas recebidas com sucesso');
 });
 
-async function fazerNovaPergunta() {
+async function fazerNovaPergunta(req, res) {
   const generationConfig = {
     temperature: 0.6,
   };
@@ -148,6 +152,7 @@ async function fazerNovaPergunta() {
     },
   ];
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig, safetySettings });
+  const questoesCompletas = dataStore[req.user.userId];
 
   const questoesTexto = questoesCompletas.map((questao) => {
     return `${questao.numero}. ${questao.pergunta} /n Resposta: ${questao.respostaCliente}`;
@@ -171,7 +176,7 @@ async function fazerNovaPergunta() {
 
 app.get('/gabaritoDiscursivo', async (req, res) => {
   try {
-    const novaPergunta = await fazerNovaPergunta();
+    const novaPergunta = await fazerNovaPergunta(req, res);
     console.log(novaPergunta);
 
     if (typeof novaPergunta.pergunta !== 'string') {
@@ -200,6 +205,7 @@ app.get('/gabaritoDiscursivo', async (req, res) => {
     }
 
     let notaTotal = 0;
+    const questoesCompletas = dataStore[req.user.userId];
 
     for (let i = 0; i < correcaoMatches.length; i++) {
       const correcao = correcaoMatches[i][1].trim();
@@ -232,6 +238,7 @@ app.get('/gabaritoDiscursivo', async (req, res) => {
 
     console.log(gabarito2);
     res.json(gabarito2);
+    dataStore[req.user.userId] = {};
   } catch (error) {
     console.error(error);
     res.status(500).send('Erro ao gerar o gabarito');

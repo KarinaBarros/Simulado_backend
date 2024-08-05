@@ -6,8 +6,6 @@ const app = express();
 require('dotenv').config();
 app.use(express.json());
 
-let formattedData;
-
 let dataStore = {};
 
 const {
@@ -21,13 +19,7 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 function formatarQuestoes(texto) {
-  
-  console.log(texto);
-  
-  
   const questoes = texto;
-  
-  
   return questoes;
 }
   
@@ -68,6 +60,7 @@ async function run(ortografia) {
 }
 
 app.post('/ortografia', async (req, res) => {
+  dataStore[req.user.userId] = {};
   try {
     const { ortografia } = req.body;
     const data = await run(ortografia);
@@ -85,6 +78,8 @@ app.get('/correcao', (req, res) => {
     return res.status(404).json({ error: 'Correção não encontrada' });
   }
   res.json(data);
+  dataStore[req.user.userId] = {};
 });
+
 
 module.exports = app;

@@ -6,7 +6,7 @@ const app = express();
 require('dotenv').config();
 app.use(express.json());
 
-let formattedData;
+let dataStore = {};
 
 const {
   GoogleGenerativeAI,
@@ -67,14 +67,16 @@ async function run(redacao) {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
-  formattedData = questoesFormatadas;
+  
   return questoesFormatadas;
 }
 
 app.post('/redacao', async (req, res) => {
+  dataStore[req.user.userId] = {};
   try {
     const { redacao } = req.body;
     const data = await run(redacao);
+    dataStore[req.user.userId] = data;
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -83,11 +85,12 @@ app.post('/redacao', async (req, res) => {
 });
 
 app.get('/analise', (req, res) => {
-  if (!formattedData) {
+  const data = dataStore[req.user.userId];
+  if (!data) {
     return res.status(404).json({ error: 'Correção não encontrada' });
   }
-  console.log(formattedData);
-  res.json(formattedData);
+  res.json(data);
+  dataStore[req.user.userId] = {};
 });
 
 module.exports = app;

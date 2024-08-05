@@ -6,7 +6,7 @@ const app = express();
 require('dotenv').config();
 app.use(express.json());
 
-let formattedData;
+let dataStore = {};
 
 const {
   GoogleGenerativeAI,
@@ -61,14 +61,16 @@ async function run(traducao) {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const questoesFormatadas = formatarQuestoes(response.text());
-  formattedData = questoesFormatadas;
+  
   return questoesFormatadas;
 }
 
 app.post('/traducao', async (req, res) => {
+  dataStore[req.user.userId] = {};
   try {
     const { traducao } = req.body;
     const data = await run(traducao);
+    dataStore[req.user.userId] = data;
     res.json(data);
   } catch (error) {
     console.error(error);
@@ -77,11 +79,12 @@ app.post('/traducao', async (req, res) => {
 });
 
 app.get('/textotraduzido', (req, res) => {
-  if (!formattedData) {
+  const data = dataStore[req.user.userId];
+  if (!data) {
     return res.status(404).json({ error: 'Tradução não encontrada' });
   }
-  console.log(formattedData);
-  res.json(formattedData);
+  res.json(data);
+  dataStore[req.user.userId] = {};
 });
 
 module.exports = app;
